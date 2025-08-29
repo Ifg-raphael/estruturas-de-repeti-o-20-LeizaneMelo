@@ -1,0 +1,68 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Caso 1
+      id: caso-1
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Caso 1
+        setup-command: ''
+        command: python material_radioativo.py
+        input: '1000'
+        expected-output: 0h 9m 10s
+        comparison-method: exact
+        timeout: 5
+    - name: Caso 2
+      id: caso-2
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Caso 2
+        setup-command: ''
+        command: python material_radioativo.py
+        input: '0.4'
+        expected-output: 0h 0m 0s
+        comparison-method: exact
+        timeout: 5
+    - name: Caso 3
+      id: caso-3
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Caso 3
+        setup-command: ''
+        command: python material_radioativo.py
+        input: '360000'
+        expected-output: 0h 16m 40s
+        comparison-method: exact
+        timeout: 5
+    - name: Caso 4
+      id: caso-4
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Caso 4
+        setup-command: ''
+        command: python material_radioativo.py
+        input: 5e21
+        expected-output: 1h 0m 50s
+        comparison-method: exact
+        timeout: 5
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        CASO-1_RESULTS: "${{steps.caso-1.outputs.result}}"
+        CASO-2_RESULTS: "${{steps.caso-2.outputs.result}}"
+        CASO-3_RESULTS: "${{steps.caso-3.outputs.result}}"
+        CASO-4_RESULTS: "${{steps.caso-4.outputs.result}}"
+      with:
+        runners: caso-1,caso-2,caso-3,caso-4
